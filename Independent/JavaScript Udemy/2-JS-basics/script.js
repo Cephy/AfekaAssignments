@@ -458,8 +458,8 @@ while(i < 10){
 }
 */  
 //continue and break;   
-    
- var john = ['John', 'Smith', 1990, 'teacher', false];   
+/*   
+var john = ['John', 'Smith', 1990, 'teacher', false];   
     
 console.log('~~~~with Continue~~~~');
 for(var i = 0 ; i < john.length ; i++){
@@ -474,10 +474,11 @@ for(var i = 0 ; i < john.length ; i++){
         console.log(john[i]);
     
 }
-    
-    
-    
-    
+*/    
+
+
+
+
     
     
     
