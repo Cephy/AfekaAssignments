@@ -180,11 +180,13 @@ var UIController = (function() {
         totalPercentageContainer: '.budget__expenses--percentage',
         budget: '.budget__value',
         expensesPercentage: '.item__percentage',
+        timeLabel: '.budget__title--month',
         
         /*~~~~ HTML continer ~~~~*/
         incExpContiner: '.container' 
     }
     
+    /*~~~~~ Public Functions ~~~~~*/
     return {
         getInput: function(){
             return {            
@@ -205,17 +207,17 @@ var UIController = (function() {
             if (type === 'income'){
                 element = DOMStrings.incomeContiner;
                 
-                html = '<div class="item clearfix" id="income-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"> <div class="item__value">+ %value%</div> <div class="item__delete"> <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> </div> </div>'    
+                html = '<div class="item clearfix" id="income-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"> <div class="item__value">%value%</div> <div class="item__delete"> <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> </div> </div>'    
             } else if (type === 'expense'){
                 element = DOMStrings.expensesContiner;
                 
-                html = '<div class="item clearfix" id="expense-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"> <div class="item__value">- %value%</div> <div class="item__percentage">21%</div> <div class="item__delete"> <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> </div> </div>' 
+                html = '<div class="item clearfix" id="expense-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"> <div class="item__value">%value%</div> <div class="item__percentage">21%</div> <div class="item__delete"> <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> </div> </div>' 
             }
             
             //Replace text with some data
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', this.formatNumber(obj.value, type));
             
             
             //Insert HTML into the dome
@@ -253,9 +255,9 @@ var UIController = (function() {
             budget = document.querySelector(DOMStrings.budget);
             
             //Change the labels
-            totalIncome.textContent = obj.income;
-            totalExpenses.textContent = obj.expense;
-            budget.textContent = obj.budget;
+            totalIncome.textContent = this.formatNumber(obj.income, 'income');
+            totalExpenses.textContent = this.formatNumber(obj.expense, 'expense');
+            budget.textContent = this.formatNumber(obj.budget, obj.budget > 0 ? 'income' : 'expense');
             
             //Make sure the precentage in not null
             if(obj.percentage > 0){
@@ -288,6 +290,47 @@ var UIController = (function() {
             
         },
         
+        formatNumber: function (num, type){
+            /* 
+            Rules for good number formating:
+                1. + or - before an expense or income
+                2. exactly two decimal points after the number
+                3. comme separating each 3 digits
+            */
+            
+            var numSplit, int, dex;
+            
+            num = Math.abs(num);    //Turn to an absolut number
+            num = num.toFixed(2);   //Add 2 decimal numbers 
+            
+            numSplit = num.split('.');
+            
+            int = numSplit[0];
+            dec = numSplit[1];
+            
+            if(int.length > 3) {
+                int = int.substr(0, (int.length-3)) + ',' + int.substr((int.length - 3) , 3);
+            } 
+            
+            dec = numSplit[1];
+            
+            return (type === 'expense' ? '-' : '+' + ' ') + int + '.' + dec;
+                   
+        },
+        
+        displayMonth: function(){
+            var now, year, month, months;
+            
+            now = new Date();
+            
+            months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            month = now.getMonth();
+            year  = now.getFullYear();
+            
+            document.querySelector(DOMStrings.timeLabel).textContent = months[month-1] + ' ' + year;
+            
+        },
+        
         initUI: function(){
             var totalIncome, totalExpenses, percentage, budget;
             
@@ -302,6 +345,9 @@ var UIController = (function() {
             totalExpenses.textContent = 0;
             budget.textContent = 0;
             percentage.textContent = '---';
+            
+            //Set the date
+            this.displayMonth();
             
         }
     };
