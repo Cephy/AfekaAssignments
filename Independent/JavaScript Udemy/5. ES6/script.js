@@ -142,9 +142,107 @@ console.log(ages6);
 */                  
 
 /*~~~~~~~~~~~ Arrow functions 2 ~~~~~~~~~~~*/
-                  
-//ES5
+/*                 
+//ES5 - will not work becuase the fuction is attached to the golabel window and not the object. but you can bipass it by doing 'self = this;' within the function
 var box5 = {
-    
+    color: 'green',
+    position: 1,
+    clickMe: function(){
+        document.querySelector('.green').addEventListener('click', function() {
+            var str = 'This is box number ' + this.position + ' and it is ' + this.color;
+            
+            alert(str);
+        });
+    }
+};
+
+box5.clickMe();
+*/
+
+//ES6 - first example
+/*
+const box6 = {
+    color: 'green',
+    position: 1,
+    clickMe: function(){
+        document.querySelector('.green').addEventListener('click', () => {
+            var str = 'This is box number ' + this.position + ' and it is ' + this.color;
+            
+            alert(str);
+        });
+    }
+};
+
+box6.clickMe();
+*/
+/*
+//ES6 - Second example - shows that if you define the function 'clickMe' using "arrow" the suranding envierment is the global object ("window") and then again you have no excess to 'color' and 'position'  
+const box6 = {
+    color: 'green',
+    position: 1,
+    clickMe: () => {
+        document.querySelector('.green').addEventListener('click', () => {
+            var str = 'This is box number ' + this.position + ' and it is ' + this.color;
+            
+            alert(str);
+        });
+    }
+};
+
+box6.clickMe();
+*/
+
+//ES5
+/*
+function Person(name){
+    this.name = name;
 }
+
+Person.prototype.myFriends5 = function(friends){
+    
+    var arr = friends.map(function(el){
+        return this.name + ' is friends with ' + el;
+    }.bind(this));
+    
+    console.log(arr);
+}
+
+var friends = ['Bob', 'Jane', 'Mark'];
+
+new Person('John').myFriends5(friends);
+*/
+
+//ES6
+function Person(name){
+    this.name = name;
+}
+
+Person.prototype.myFriends6 = function(friends){
+    
+    var arr = friends.map((el) => this.name + `is friends with ${el}`)
+    
+    console.log(arr);
+}
+
+var friends = ['Bob', 'Jane', 'Mark'];
+
+new Person('John').myFriends6(friends);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
